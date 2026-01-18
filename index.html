@@ -56,7 +56,7 @@
             overflow-x: hidden;
         }
         html {
-            scroll-padding-top: 80px; /* يمنع النافبار من تغطية العناوين */
+            scroll-padding-top: 80px; 
         }
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
@@ -74,7 +74,7 @@
             text-shadow: 0 4px 8px rgba(0,0,0,0.6);
         }
         
-        /* Glassmorphism */
+        /* Glassmorphism Classes */
         .glass {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(12px);
@@ -86,6 +86,34 @@
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Navbar Scrolled State */
+        .nav-scrolled {
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            padding-top: 0.75rem !important;
+            padding-bottom: 0.75rem !important;
+        }
+
+        /* Nav Link Animation */
+        .nav-link {
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            right: 0;
+            background-color: #059669;
+            transition: width 0.3s ease-in-out;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+            left: 0;
         }
 
         /* Swiper Customization */
@@ -124,16 +152,36 @@
             transform: scale(1.1);
         }
         
-        /* Mobile Menu Animation */
-        #mobile-menu {
-            transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
-            max-height: 0;
+        /* Mobile Menu Drawer Animation */
+        .drawer-overlay {
+            visibility: hidden;
             opacity: 0;
-            overflow: hidden;
+            transition: all 0.3s ease-in-out;
         }
-        #mobile-menu.active {
-            max-height: 500px;
+        .drawer-overlay.open {
+            visibility: visible;
             opacity: 1;
+        }
+        .drawer-menu {
+            transform: translateX(-100%); /* Start hidden to the left */
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .drawer-menu.open {
+            transform: translateX(0);
+        }
+
+        /* Hamburger Animation */
+        .hamburger-line {
+            transition: all 0.3s ease-in-out;
+        }
+        .hamburger.open .line-1 {
+            transform: rotate(45deg) translate(5px, 6px);
+        }
+        .hamburger.open .line-2 {
+            opacity: 0;
+        }
+        .hamburger.open .line-3 {
+            transform: rotate(-45deg) translate(5px, -6px);
         }
 
         /* Animations */
@@ -150,13 +198,13 @@
 </head>
 <body class="bg-gray-50 text-gray-800">
 
-    <!-- الشريط العلوي (Navbar) -->
-    <nav class="fixed w-full z-50 transition-all duration-300 bg-white/90 backdrop-blur-md shadow-sm" id="navbar">
-        <div class="container mx-auto px-4 py-3">
+    <!-- Navbar الجديدة المطورة -->
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 bg-white/80 backdrop-blur-sm border-b border-gray-100 py-4">
+        <div class="container mx-auto px-4 lg:px-8">
             <div class="flex justify-between items-center">
                 <!-- Logo -->
                 <a href="#" class="flex items-center gap-3 group relative z-50">
-                    <div class="bg-gradient-to-br from-primary to-green-400 text-white p-2 rounded-xl shadow-lg">
+                    <div class="bg-gradient-to-br from-primary to-green-400 text-white w-10 h-10 md:w-12 md:h-12 rounded-xl shadow-lg flex items-center justify-center transform group-hover:rotate-6 transition-transform duration-300">
                         <i class="fa-solid fa-chart-line text-xl md:text-2xl"></i>
                     </div>
                     <div class="leading-tight">
@@ -166,44 +214,101 @@
                 </a>
                 
                 <!-- Desktop Menu -->
-                <div class="hidden lg:flex gap-6 font-bold text-gray-600 text-sm xl:text-base">
-                    <a href="#home" class="hover:text-primary transition py-2 border-b-2 border-transparent hover:border-primary">الرئيسية</a>
-                    <a href="#about" class="hover:text-primary transition py-2 border-b-2 border-transparent hover:border-primary">من أنا</a>
-                    <a href="#services" class="hover:text-primary transition py-2 border-b-2 border-transparent hover:border-primary">مميزاتي</a>
-                    <a href="#portfolio" class="hover:text-primary transition py-2 border-b-2 border-transparent hover:border-primary">أعمالي</a>
-                    <a href="#pricing" class="hover:text-primary transition py-2 border-b-2 border-transparent hover:border-primary">الأسعار</a>
+                <div class="hidden lg:flex items-center gap-8 font-bold text-gray-600">
+                    <a href="#home" class="nav-link hover:text-primary transition py-2 text-sm xl:text-base">الرئيسية</a>
+                    <a href="#about" class="nav-link hover:text-primary transition py-2 text-sm xl:text-base">من أنا</a>
+                    <a href="#services" class="nav-link hover:text-primary transition py-2 text-sm xl:text-base">مميزاتي</a>
+                    <a href="#portfolio" class="nav-link hover:text-primary transition py-2 text-sm xl:text-base">أعمالي</a>
+                    <a href="#pricing" class="nav-link hover:text-primary transition py-2 text-sm xl:text-base">الأسعار</a>
                 </div>
 
                 <!-- Call To Action & Mobile Toggle -->
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-3 md:gap-4">
                     <a href="tel:0544090373" class="hidden xl:flex items-center gap-2 text-gray-600 hover:text-primary font-bold transition text-sm">
-                        <i class="fa-solid fa-phone-flip"></i>
+                        <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition">
+                             <i class="fa-solid fa-phone-flip text-xs"></i>
+                        </div>
                         <span dir="ltr">0544090373</span>
                     </a>
-                    <a href="#contact" class="hidden md:inline-flex bg-gradient-to-r from-primary to-green-600 hover:from-green-600 hover:to-primary text-white px-5 py-2 rounded-full font-bold text-sm transition shadow-lg hover:shadow-green-500/30 transform hover:-translate-y-0.5">
-                        استشارة مجانية
+                    
+                    <a href="#contact" class="hidden md:inline-flex bg-gradient-to-r from-primary to-green-600 hover:from-green-600 hover:to-primary text-white px-6 py-2.5 rounded-full font-bold text-sm transition shadow-lg shadow-green-500/30 transform hover:-translate-y-0.5 items-center gap-2">
+                        <span>استشارة مجانية</span>
+                        <i class="fa-solid fa-arrow-left text-xs"></i>
                     </a>
                     
-                    <!-- Mobile Menu Button -->
-                    <button id="mobile-menu-btn" class="lg:hidden w-10 h-10 flex items-center justify-center text-gray-700 bg-gray-100 rounded-lg focus:outline-none hover:bg-gray-200 transition">
-                        <i class="fa-solid fa-bars text-xl"></i>
+                    <!-- Hamburger Button -->
+                    <button id="menu-btn" class="lg:hidden z-50 w-10 h-10 flex flex-col items-center justify-center gap-1.5 focus:outline-none hamburger">
+                        <span class="hamburger-line line-1 w-6 h-0.5 bg-gray-800 rounded-full block"></span>
+                        <span class="hamburger-line line-2 w-6 h-0.5 bg-gray-800 rounded-full block"></span>
+                        <span class="hamburger-line line-3 w-6 h-0.5 bg-gray-800 rounded-full block"></span>
                     </button>
-                </div>
-            </div>
-
-            <!-- Mobile Menu Dropdown -->
-            <div id="mobile-menu" class="lg:hidden bg-white border-t border-gray-100 mt-3 rounded-b-2xl shadow-xl">
-                <div class="flex flex-col p-4 space-y-3 font-bold text-gray-700 text-center">
-                    <a href="#home" class="mobile-link py-2 hover:bg-gray-50 rounded-lg hover:text-primary transition">الرئيسية</a>
-                    <a href="#about" class="mobile-link py-2 hover:bg-gray-50 rounded-lg hover:text-primary transition">من أنا</a>
-                    <a href="#services" class="mobile-link py-2 hover:bg-gray-50 rounded-lg hover:text-primary transition">الخدمات</a>
-                    <a href="#portfolio" class="mobile-link py-2 hover:bg-gray-50 rounded-lg hover:text-primary transition">أعمالي</a>
-                    <a href="#pricing" class="mobile-link py-2 hover:bg-gray-50 rounded-lg hover:text-primary transition">الأسعار</a>
-                    <a href="#contact" class="mobile-link bg-primary text-white py-3 rounded-xl mt-2 shadow-md">اطلب استشارة مجانية</a>
                 </div>
             </div>
         </div>
     </nav>
+
+    <!-- Mobile Drawer Menu (القائمة الجانبية) -->
+    <div id="drawer-overlay" class="drawer-overlay fixed inset-0 z-40 bg-gray-900/60 backdrop-blur-sm lg:hidden"></div>
+    
+    <div id="drawer-menu" class="drawer-menu fixed top-0 left-0 bottom-0 w-[280px] bg-white z-50 shadow-2xl flex flex-col lg:hidden overflow-y-auto">
+        <div class="p-6 border-b border-gray-100">
+             <div class="flex items-center gap-3">
+                <div class="bg-gradient-to-br from-primary to-green-400 text-white w-10 h-10 rounded-xl shadow-lg flex items-center justify-center">
+                    <i class="fa-solid fa-chart-line text-xl"></i>
+                </div>
+                <div class="leading-tight">
+                    <h1 class="text-xl font-black text-gray-800">احمد بابقي</h1>
+                </div>
+            </div>
+        </div>
+        
+        <div class="p-6 flex-1">
+            <nav class="flex flex-col space-y-4 font-bold text-gray-600">
+                <a href="#home" class="drawer-link flex items-center gap-3 p-3 rounded-xl hover:bg-green-50 hover:text-primary transition">
+                    <i class="fa-solid fa-house text-lg w-6"></i> الرئيسية
+                </a>
+                <a href="#about" class="drawer-link flex items-center gap-3 p-3 rounded-xl hover:bg-green-50 hover:text-primary transition">
+                    <i class="fa-solid fa-user text-lg w-6"></i> من أنا
+                </a>
+                <a href="#services" class="drawer-link flex items-center gap-3 p-3 rounded-xl hover:bg-green-50 hover:text-primary transition">
+                    <i class="fa-solid fa-briefcase text-lg w-6"></i> مميزاتي
+                </a>
+                <a href="#portfolio" class="drawer-link flex items-center gap-3 p-3 rounded-xl hover:bg-green-50 hover:text-primary transition">
+                    <i class="fa-solid fa-images text-lg w-6"></i> أعمالي
+                </a>
+                <a href="#pricing" class="drawer-link flex items-center gap-3 p-3 rounded-xl hover:bg-green-50 hover:text-primary transition">
+                    <i class="fa-solid fa-tags text-lg w-6"></i> الأسعار
+                </a>
+            </nav>
+            
+            <div class="mt-8 pt-8 border-t border-gray-100">
+                <p class="text-xs font-bold text-gray-400 mb-4">تواصل معنا</p>
+                <div class="space-y-4">
+                    <a href="tel:0544090373" class="flex items-center gap-3 text-gray-700 hover:text-primary transition">
+                        <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-primary"><i class="fa-solid fa-phone"></i></div>
+                        <span dir="ltr" class="font-bold text-sm">0544090373</span>
+                    </a>
+                    <a href="mailto:info@ahmedbabqi.com" class="flex items-center gap-3 text-gray-700 hover:text-primary transition">
+                        <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-primary"><i class="fa-solid fa-envelope"></i></div>
+                        <span class="font-bold text-sm">info@ahmedbabqi.com</span>
+                    </a>
+                </div>
+                
+                <div class="flex gap-3 mt-6">
+                    <a href="#" class="w-9 h-9 rounded-full bg-gray-50 text-gray-500 hover:bg-primary hover:text-white flex items-center justify-center transition"><i class="fa-brands fa-x-twitter"></i></a>
+                    <a href="#" class="w-9 h-9 rounded-full bg-gray-50 text-gray-500 hover:bg-primary hover:text-white flex items-center justify-center transition"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" class="w-9 h-9 rounded-full bg-gray-50 text-gray-500 hover:bg-primary hover:text-white flex items-center justify-center transition"><i class="fa-brands fa-tiktok"></i></a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="p-4 border-t border-gray-100 bg-gray-50">
+             <a href="#contact" class="drawer-link block w-full bg-primary text-white text-center py-3 rounded-xl font-bold shadow-lg hover:bg-green-700 transition">
+                اطلب استشارة مجانية
+            </a>
+        </div>
+    </div>
+    <!-- نهاية Navbar -->
 
     <!-- 1. القسم الرئيسي (Hero Slider) -->
     <section id="home" class="relative">
@@ -699,27 +804,48 @@
             offset: 50
         });
 
-        // تشغيل قائمة الجوال
-        const btn = document.getElementById('mobile-menu-btn');
-        const menu = document.getElementById('mobile-menu');
-        const links = document.querySelectorAll('.mobile-link');
+        // ----------------------------------------------------
+        // Logic for the New Professional Navbar & Drawer
+        // ----------------------------------------------------
+        const menuBtn = document.getElementById('menu-btn');
+        const drawerOverlay = document.getElementById('drawer-overlay');
+        const drawerMenu = document.getElementById('drawer-menu');
+        const drawerLinks = document.querySelectorAll('.drawer-link');
+        const navbar = document.getElementById('navbar');
 
-        btn.addEventListener('click', () => {
-            menu.classList.toggle('hidden');
-            setTimeout(() => {
-                menu.classList.toggle('active');
-            }, 10);
-        });
+        function toggleMenu() {
+            menuBtn.classList.toggle('open');
+            drawerOverlay.classList.toggle('open');
+            drawerMenu.classList.toggle('open');
+            document.body.classList.toggle('overflow-hidden'); // Prevent scrolling
+        }
 
-        // إغلاق القائمة عند الضغط على أي رابط
-        links.forEach(link => {
+        menuBtn.addEventListener('click', toggleMenu);
+        drawerOverlay.addEventListener('click', toggleMenu);
+
+        // Close menu when link is clicked
+        drawerLinks.forEach(link => {
             link.addEventListener('click', () => {
-                menu.classList.remove('active');
-                setTimeout(() => {
-                    menu.classList.add('hidden');
-                }, 300);
+                if(drawerMenu.classList.contains('open')){
+                    toggleMenu();
+                }
             });
         });
+
+        // Navbar Scroll Effect
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 20) {
+                navbar.classList.add('nav-scrolled');
+                navbar.classList.remove('py-4');
+            } else {
+                navbar.classList.remove('nav-scrolled');
+                navbar.classList.add('py-4');
+            }
+        });
+
+        // ----------------------------------------------------
+        // Existing Scripts for Sliders
+        // ----------------------------------------------------
 
         const adsImages = [
             "https://taaggeer.com/wp-content/uploads/2026/01/11500-ريال.png",
@@ -834,15 +960,6 @@
                 document.getElementById('thank-you-msg').classList.add('flex');
             }, 300);
         }
-
-        window.addEventListener('scroll', () => {
-            const navbar = document.getElementById('navbar');
-            if (window.scrollY > 50) {
-                navbar.classList.add('shadow-md');
-            } else {
-                navbar.classList.remove('shadow-md');
-            }
-        });
     </script>
 </body>
 </html>
