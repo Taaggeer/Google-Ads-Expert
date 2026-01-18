@@ -671,18 +671,18 @@
                             <i class="fa-solid fa-check text-4xl md:text-5xl text-primary"></i>
                         </div>
                         <h3 class="text-2xl md:text-3xl font-black text-gray-800 mb-2">شكراً لك!</h3>
-                        <p class="text-gray-500">تم استلام طلبك بنجاح. سيتواصل معك فريقنا قريباً.</p>
+                        <p class="text-gray-500">جاري تحويلك إلى الواتساب لإكمال الطلب...</p>
                     </div>
 
                     <form id="contact-form" onsubmit="submitForm(event)" class="space-y-4 md:space-y-6">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                             <div>
                                 <label class="block text-gray-700 font-bold text-xs md:text-sm mb-2">الاسم الكريم</label>
-                                <input type="text" required class="w-full px-4 py-3 md:py-4 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:bg-white transition text-sm" placeholder="الاسم هنا">
+                                <input type="text" id="client-name" required class="w-full px-4 py-3 md:py-4 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:bg-white transition text-sm" placeholder="الاسم هنا">
                             </div>
                             <div>
                                 <label class="block text-gray-700 font-bold text-xs md:text-sm mb-2">رقم الجوال</label>
-                                <input type="tel" required class="w-full px-4 py-3 md:py-4 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:bg-white transition text-left text-sm" placeholder="05xxxxxxxx">
+                                <input type="tel" id="client-phone" required class="w-full px-4 py-3 md:py-4 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:bg-white transition text-left text-sm" placeholder="05xxxxxxxx">
                             </div>
                         </div>
                         <div>
@@ -704,11 +704,11 @@
                         </div>
                         <div>
                             <label class="block text-gray-700 font-bold text-xs md:text-sm mb-2">تفاصيل الرسالة</label>
-                            <textarea rows="4" class="w-full px-4 py-3 md:py-4 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:bg-white transition resize-none text-sm" placeholder="اكتب تفاصيل مشروعك أو استفسارك هنا..."></textarea>
+                            <textarea id="client-message" rows="4" class="w-full px-4 py-3 md:py-4 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/50 focus:bg-white transition resize-none text-sm" placeholder="اكتب تفاصيل مشروعك أو استفسارك هنا..."></textarea>
                         </div>
                         <button type="submit" class="w-full bg-primary text-white py-3 md:py-4 rounded-xl font-bold text-base md:text-lg hover:bg-green-700 transition shadow-lg shadow-primary/30 flex items-center justify-center gap-2">
-                            <span>إرسال الطلب</span>
-                            <i class="fa-solid fa-paper-plane"></i>
+                            <span>إرسال الطلب عبر واتساب</span>
+                            <i class="fa-brands fa-whatsapp"></i>
                         </button>
                     </form>
                 </div>
@@ -989,14 +989,40 @@
             document.getElementById('contact').scrollIntoView({behavior: 'smooth'});
         }
 
+        // ----------------------------------------------------
+        // WhatsApp Form Submission Logic (MODIFIED)
+        // ----------------------------------------------------
         function submitForm(event) {
             event.preventDefault();
+            
+            // 1. جمع البيانات من الحقول
+            const name = document.getElementById('client-name').value;
+            const phone = document.getElementById('client-phone').value;
+            const service = document.getElementById('service-select').value;
+            const message = document.getElementById('client-message').value;
+
+            // 2. تنسيق الرسالة
+            const whatsappText = `*طلب استشارة جديد من الموقع* %0a` +
+                                 `---------------------------%0a` +
+                                 `*الاسم:* ${name}%0a` +
+                                 `*الجوال:* ${phone}%0a` +
+                                 `*الخدمة المطلوبة:* ${service}%0a` +
+                                 `*التفاصيل:* ${message}`;
+
+            // 3. رابط الواتساب (رقمك الدولي)
+            const targetPhone = "966544090373";
+            const url = `https://wa.me/${targetPhone}?text=${whatsappText}`;
+
+            // 4. تأثير بصري (إخفاء النموذج وإظهار رسالة الشكر)
             const form = document.getElementById('contact-form');
             form.style.opacity = '0';
             setTimeout(() => {
                 form.style.display = 'none';
                 document.getElementById('thank-you-msg').classList.remove('hidden');
                 document.getElementById('thank-you-msg').classList.add('flex');
+                
+                // 5. فتح الواتساب
+                window.open(url, '_blank');
             }, 300);
         }
     </script>
